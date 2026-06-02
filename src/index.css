@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+.dark input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}
+
+@media print {
+  @page { margin: 0.75in; }
+  aside { display: none !important; }
+  main { overflow: visible !important; height: auto !important; }
+}
