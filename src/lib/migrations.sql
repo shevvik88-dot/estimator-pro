@@ -66,3 +66,16 @@ $$;
 CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW EXECUTE PROCEDURE handle_new_user();
+
+-- ── Price Overrides ────────────────────────────────────────────────────────
+CREATE TABLE price_overrides (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id uuid REFERENCES profiles(id) ON DELETE CASCADE,
+  item_key text NOT NULL,
+  custom_rate numeric NOT NULL,
+  unit text,
+  label text,
+  UNIQUE(user_id, item_key)
+);
+ALTER TABLE price_overrides ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Users own their prices" ON price_overrides FOR ALL USING (auth.uid() = user_id);
