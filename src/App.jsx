@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
+import { Bars3Icon } from '@heroicons/react/24/outline'
 import { EstimateProvider } from './context/EstimateContext'
 import { supabase } from './lib/supabase'
 import Sidebar from './components/Sidebar'
@@ -20,6 +21,7 @@ export default function App() {
     () => window.matchMedia('(prefers-color-scheme: dark)').matches
   )
   const [session, setSession] = useState(undefined) // undefined = loading
+  const [drawerOpen, setDrawerOpen] = useState(false)
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', darkMode)
@@ -52,24 +54,46 @@ export default function App() {
   return (
     <EstimateProvider>
       <div className="flex h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100">
-        <Sidebar darkMode={darkMode} onToggleDark={() => setDarkMode((d) => !d)} />
-        <main className="flex-1 overflow-y-auto">
-          <Routes>
-            <Route path="/" element={<Navigate to="/projects" replace />} />
-            <Route path="/new-estimate" element={<NewEstimateLayout />}>
-              <Route index element={<Navigate to="1" replace />} />
-              <Route path="1" element={<Step1ClientInfo />} />
-              <Route path="2" element={<Step2Project />} />
-              <Route path="3" element={<Step3Measurements />} />
-              <Route path="4" element={<Step4Review />} />
-            </Route>
-            <Route path="/projects" element={<Projects />} />
-            <Route path="/documents" element={<Documents />} />
-            <Route path="/my-prices" element={<MyPrices />} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path="/estimate/preview/:id?" element={<EstimatePreview />} />
-          </Routes>
-        </main>
+        <Sidebar
+          darkMode={darkMode}
+          onToggleDark={() => setDarkMode((d) => !d)}
+          isOpen={drawerOpen}
+          onClose={() => setDrawerOpen(false)}
+        />
+
+        {/* Right side: mobile top bar + page content */}
+        <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
+          <div className="md:hidden flex items-center gap-3 h-14 px-4 shrink-0 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+            <button
+              onClick={() => setDrawerOpen(true)}
+              className="p-1 rounded-md text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800"
+              aria-label="Open menu"
+            >
+              <Bars3Icon className="w-6 h-6" />
+            </button>
+            <span className="text-lg font-bold text-indigo-600 dark:text-indigo-400 tracking-tight">
+              EstimatorPro
+            </span>
+          </div>
+
+          <main className="flex-1 overflow-auto">
+            <Routes>
+              <Route path="/" element={<Navigate to="/projects" replace />} />
+              <Route path="/new-estimate" element={<NewEstimateLayout />}>
+                <Route index element={<Navigate to="1" replace />} />
+                <Route path="1" element={<Step1ClientInfo />} />
+                <Route path="2" element={<Step2Project />} />
+                <Route path="3" element={<Step3Measurements />} />
+                <Route path="4" element={<Step4Review />} />
+              </Route>
+              <Route path="/projects" element={<Projects />} />
+              <Route path="/documents" element={<Documents />} />
+              <Route path="/my-prices" element={<MyPrices />} />
+              <Route path="/settings" element={<Settings />} />
+              <Route path="/estimate/preview/:id?" element={<EstimatePreview />} />
+            </Routes>
+          </main>
+        </div>
       </div>
     </EstimateProvider>
   )
