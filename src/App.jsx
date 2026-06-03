@@ -54,7 +54,7 @@ export default function App() {
 
   return (
     <EstimateProvider>
-      <div className="flex h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100">
+      <div className="flex h-screen print:h-auto print:overflow-visible bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100">
         <Sidebar
           darkMode={darkMode}
           onToggleDark={() => setDarkMode((d) => !d)}
@@ -63,7 +63,7 @@ export default function App() {
         />
 
         {/* Right side: mobile top bar + page content */}
-        <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
+        <div className="flex flex-col flex-1 min-w-0 overflow-hidden print:overflow-visible print:h-auto">
           <div className="md:hidden print:hidden flex items-center gap-3 h-14 px-4 shrink-0 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
             <button
               onClick={() => setDrawerOpen(true)}
