@@ -106,7 +106,7 @@ export default function MyPrices() {
   }
 
   return (
-    <div className="p-8 max-w-3xl">
+    <div className="p-4 md:p-8 max-w-3xl">
 
       {/* ── Toast ─────────────────────────────────────────────── */}
       {toast && (
@@ -121,7 +121,7 @@ export default function MyPrices() {
       )}
 
       {/* ── Header ────────────────────────────────────────────── */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col gap-3 mb-6 md:flex-row md:items-center md:justify-between">
         <div>
           <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">My Prices</h1>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
@@ -131,7 +131,7 @@ export default function MyPrices() {
         <button
           onClick={handleSave}
           disabled={saving || loading}
-          className="px-5 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white text-sm font-semibold transition-colors"
+          className="w-full md:w-auto px-5 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white text-sm font-semibold transition-colors"
         >
           {saving ? 'Saving…' : 'Save prices'}
         </button>
@@ -161,8 +161,8 @@ export default function MyPrices() {
                 </p>
               </div>
 
-              {/* Column headers */}
-              <div className="grid grid-cols-[1fr_5rem_6rem_7rem] gap-x-4 px-5 py-2 border-b border-gray-100 dark:border-gray-800">
+              {/* Column headers — desktop only */}
+              <div className="hidden md:grid grid-cols-[1fr_5rem_6rem_7rem] gap-x-4 px-5 py-2 border-b border-gray-100 dark:border-gray-800">
                 <span className="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">Description</span>
                 <span className="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 text-center">Unit</span>
                 <span className="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 text-right">Default</span>
@@ -172,21 +172,23 @@ export default function MyPrices() {
               {/* Rate rows */}
               {group.items.map((item, i) => {
                 const hasOverride = overrides[item.key] !== undefined && overrides[item.key] !== ''
+                const borderClass = i < group.items.length - 1 ? 'border-b border-gray-50 dark:border-gray-800/60' : ''
+                const inputClass = `pl-5 pr-2 py-1.5 rounded-lg border text-sm text-right tabular-nums focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors ${
+                  hasOverride
+                    ? 'border-indigo-300 dark:border-indigo-600 bg-indigo-50 dark:bg-indigo-900/20 text-gray-900 dark:text-white'
+                    : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder:text-gray-300 dark:placeholder:text-gray-600'
+                }`
                 return (
-                  <div
-                    key={item.key}
-                    className={`grid grid-cols-[1fr_5rem_6rem_7rem] gap-x-4 items-center px-5 py-3 ${i < group.items.length - 1 ? 'border-b border-gray-50 dark:border-gray-800/60' : ''}`}
-                  >
-                    <p className="text-sm text-gray-700 dark:text-gray-300 leading-snug">
-                      {item.label}
-                    </p>
-                    <p className="text-sm text-gray-400 dark:text-gray-500 text-center">
-                      {item.unit || '—'}
-                    </p>
-                    <p className="text-sm text-gray-400 dark:text-gray-500 text-right tabular-nums">
-                      {fmt(item.defaultRate)}
-                    </p>
-                    <div className="flex justify-end">
+                  <div key={item.key} className={`px-5 py-3 ${borderClass}`}>
+
+                    {/* Mobile card layout */}
+                    <div className="md:hidden flex flex-col gap-1.5">
+                      <p className="text-sm text-gray-700 dark:text-gray-300 leading-snug">
+                        {item.label}
+                      </p>
+                      <p className="text-xs text-gray-400 dark:text-gray-500">
+                        Default: {fmt(item.defaultRate)}{item.unit ? ` / ${item.unit}` : ''}
+                      </p>
                       <div className="relative">
                         <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-xs text-gray-400 dark:text-gray-500 pointer-events-none">$</span>
                         <input
@@ -196,14 +198,38 @@ export default function MyPrices() {
                           value={overrides[item.key] ?? ''}
                           onChange={(e) => setRate(item.key, e.target.value)}
                           placeholder={String(item.defaultRate)}
-                          className={`w-24 pl-5 pr-2 py-1.5 rounded-lg border text-sm text-right tabular-nums focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors
-                            ${hasOverride
-                              ? 'border-indigo-300 dark:border-indigo-600 bg-indigo-50 dark:bg-indigo-900/20 text-gray-900 dark:text-white'
-                              : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder:text-gray-300 dark:placeholder:text-gray-600'
-                            }`}
+                          className={`w-full ${inputClass}`}
                         />
                       </div>
                     </div>
+
+                    {/* Desktop table layout */}
+                    <div className="hidden md:grid grid-cols-[1fr_5rem_6rem_7rem] gap-x-4 items-center">
+                      <p className="text-sm text-gray-700 dark:text-gray-300 leading-snug">
+                        {item.label}
+                      </p>
+                      <p className="text-sm text-gray-400 dark:text-gray-500 text-center">
+                        {item.unit || '—'}
+                      </p>
+                      <p className="text-sm text-gray-400 dark:text-gray-500 text-right tabular-nums">
+                        {fmt(item.defaultRate)}
+                      </p>
+                      <div className="flex justify-end">
+                        <div className="relative">
+                          <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-xs text-gray-400 dark:text-gray-500 pointer-events-none">$</span>
+                          <input
+                            type="number"
+                            min="0"
+                            step="0.01"
+                            value={overrides[item.key] ?? ''}
+                            onChange={(e) => setRate(item.key, e.target.value)}
+                            placeholder={String(item.defaultRate)}
+                            className={`w-24 ${inputClass}`}
+                          />
+                        </div>
+                      </div>
+                    </div>
+
                   </div>
                 )
               })}
@@ -218,7 +244,7 @@ export default function MyPrices() {
           <button
             onClick={handleSave}
             disabled={saving}
-            className="px-5 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white text-sm font-semibold transition-colors"
+            className="w-full md:w-auto px-5 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white text-sm font-semibold transition-colors"
           >
             {saving ? 'Saving…' : 'Save prices'}
           </button>
