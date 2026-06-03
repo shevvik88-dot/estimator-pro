@@ -64,7 +64,7 @@ export default function App() {
 
         {/* Right side: mobile top bar + page content */}
         <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
-          <div className="md:hidden flex items-center gap-3 h-14 px-4 shrink-0 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+          <div className="md:hidden print:hidden flex items-center gap-3 h-14 px-4 shrink-0 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
             <button
               onClick={() => setDrawerOpen(true)}
               className="p-1 rounded-md text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800"

@@ -146,7 +146,7 @@ export default function ContractPreview() {
         </div>
 
         {/* ── Contract Document ────────────────────────────────── */}
-        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm overflow-hidden print:rounded-none print:border-0 print:shadow-none">
+        <div className="contract-doc bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm overflow-hidden print:overflow-visible print:rounded-none print:border-0 print:shadow-none">
 
           {/* HEADER */}
           <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4 px-10 pt-10 pb-6 border-b border-gray-200 dark:border-gray-800">
@@ -240,94 +240,94 @@ export default function ContractPreview() {
               Terms and Conditions
             </h2>
 
-            <section>
+            <section className="contract-section">
               <SectionHeader>Schedule of Progress Payments</SectionHeader>
               <p className="font-bold text-gray-900 dark:text-white">
                 IT IS AGAINST THE LAW FOR A CONTRACTOR TO COLLECT PAYMENT FOR WORK NOT YET COMPLETED, OR FOR MATERIALS NOT YET DELIVERED. HOWEVER, A CONTRACTOR MAY REQUIRE A DOWN PAYMENT. THE DOWN PAYMENT MAY NOT EXCEED $1,000 OR 10 PERCENT (10%) OF THE CONTRACT PRICE, WHICHEVER IS LESS.
               </p>
             </section>
 
-            <section>
+            <section className="contract-section">
               <SectionHeader>Payment Terms</SectionHeader>
               <p>
                 Invoices are due within 3 days of receipt by Customer. If any payments are made with any form of payment other than cash, check or bank transfer, a 4% fee will be charged to the total payment due. In the event that a payment is dishonored by the bank, or if a payment is more than three (3) days overdue, Customer shall pay a fee of 3% of scheduled payment to Contractor.
               </p>
             </section>
 
-            <section>
+            <section className="contract-section">
               <SectionHeader>Start and Completion of Work</SectionHeader>
               <p>
                 The work shall be commenced and completed on the approximate dates listed above, as long as any required building permits are received and any agreed upon funds are paid. By signing this agreement, Customer agrees the project is considered "started" on demo day, not on the day the contract is signed.
               </p>
             </section>
 
-            <section>
+            <section className="contract-section">
               <SectionHeader>Change Orders</SectionHeader>
               <p>
                 Extra Work and Change Orders become part of the contract once the order is prepared in writing and signed by the parties prior to the commencement of any work covered by the new change order.
               </p>
             </section>
 
-            <section>
+            <section className="contract-section">
               <SectionHeader>Mechanics Lien Warning</SectionHeader>
               <p>
                 IMPORTANT INFORMATION FOR PROPERTY OWNER: If subcontractors or material suppliers are not paid by the contractor, they have the right to file a mechanics lien on your property. If a lien is filed and not released, you could be sued and lose your property. You can protect yourself from this situation by requiring your contractor to furnish a Preliminary 20-Day Notice from every subcontractor and material supplier. You can also protect yourself by issuing joint checks to pay contractors and material suppliers, and by getting lien releases from them before making any payments.
               </p>
             </section>
 
-            <section>
+            <section className="contract-section">
               <SectionHeader>Three-Day Right to Cancel</SectionHeader>
               <p>
                 You, the buyer, have the right to cancel this contract within three business days. You may cancel by e-mailing, mailing, faxing, or delivering a written notice to the contractor at the contractor's place of business by midnight of the third business day after receiving a signed and dated copy of this contract that includes information about your right to cancel. Notice of cancellation, if sent by mail, is effective when deposited in the mail properly addressed with postage prepaid.
               </p>
             </section>
 
-            <section>
+            <section className="contract-section">
               <SectionHeader>Contract Termination</SectionHeader>
               <p>
                 Customer agrees that in the event of termination after the three day cancellation period, Customer shall be liable for 10% of the total contract price. The downpayment is not included in the 10% amount.
               </p>
             </section>
 
-            <section>
+            <section className="contract-section">
               <SectionHeader>Dispute Resolution</SectionHeader>
               <p>
                 All disputes under $10,000 shall be resolved in Sacramento County Small Claims Court and all disputes in excess of $10,000 shall be litigated in Sacramento County Superior Court.
               </p>
             </section>
 
-            <section>
+            <section className="contract-section">
               <SectionHeader>Warranty</SectionHeader>
               <p>
                 Contractor provides a one (1) year limited warranty on completed labor. That policy is terminated if the home is sold or becomes the property of anyone other than the parties named in this contract.
               </p>
             </section>
 
-            <section>
+            <section className="contract-section">
               <SectionHeader>Workers Compensation</SectionHeader>
               <p>{companyName} carries workers compensation insurance for all employees.</p>
             </section>
 
-            <section>
+            <section className="contract-section">
               <SectionHeader>Commercial General Liability</SectionHeader>
               <p>{companyName} carries commercial general liability insurance.</p>
             </section>
 
-            <section>
+            <section className="contract-section">
               <SectionHeader>Permits</SectionHeader>
               <p>
                 Unless otherwise specified in the attached Estimate, any and all permit fees and inspection fees are excluded from the Contract and are the full responsibility of the Customer.
               </p>
             </section>
 
-            <section>
+            <section className="contract-section">
               <SectionHeader>Media Release</SectionHeader>
               <p>
                 Customer grants permission to Contractor to use photographs, reviews, video for marketing materials and social media.
               </p>
             </section>
 
-            <section>
+            <section className="contract-section">
               <SectionHeader>Yard Sign</SectionHeader>
               <p>
                 Customer grants permission to Contractor to put up a yard sign for the duration of the project, unless restricted by an HOA.

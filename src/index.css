@@ -10,4 +10,7 @@
   @page { margin: 0.75in; }
   aside { display: none !important; }
   main { overflow: visible !important; height: auto !important; }
+  body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .contract-doc { overflow: visible !important; height: auto !important; }
+  .contract-section { break-inside: avoid; }
 }
