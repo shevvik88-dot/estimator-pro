@@ -87,3 +87,11 @@ export async function getEstimate(estimateId) {
   if (error) throw error
   return data
 }
+
+export async function markContractGenerated(estimateId) {
+  const { error } = await supabase
+    .from('estimates')
+    .update({ contract_generated: true })
+    .eq('id', estimateId)
+  if (error) throw error
+}

@@ -79,3 +79,6 @@ CREATE TABLE price_overrides (
 );
 ALTER TABLE price_overrides ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Users own their prices" ON price_overrides FOR ALL USING (auth.uid() = user_id);
+
+-- ── Contract tracking ──────────────────────────────────────────────────────
+ALTER TABLE estimates ADD COLUMN IF NOT EXISTS contract_generated boolean DEFAULT false;

@@ -15,6 +15,7 @@ import Documents from './pages/Documents'
 import MyPrices from './pages/MyPrices'
 import Settings from './pages/Settings'
 import EstimatePreview from './pages/EstimatePreview'
+import ContractPreview from './pages/ContractPreview'
 
 export default function App() {
   const [darkMode, setDarkMode] = useState(
@@ -91,6 +92,7 @@ export default function App() {
               <Route path="/my-prices" element={<MyPrices />} />
               <Route path="/settings" element={<Settings />} />
               <Route path="/estimate/preview/:id?" element={<EstimatePreview />} />
+            <Route path="/contract/:id" element={<ContractPreview />} />
             </Routes>
           </main>
         </div>
