@@ -62,6 +62,21 @@ function PrintedNameLine() {
   )
 }
 
+function handlePrint() {
+  const style = document.createElement('style')
+  style.innerHTML = `
+    @media print {
+      @page { size: letter; margin: 0.75in; }
+      body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .no-print { display: none !important; }
+      * { overflow: visible !important; height: auto !important; }
+    }
+  `
+  document.head.appendChild(style)
+  window.print()
+  document.head.removeChild(style)
+}
+
 export default function ContractPreview() {
   const { id } = useParams()
   const navigate = useNavigate()
@@ -140,7 +155,7 @@ export default function ContractPreview() {
       <div className="max-w-4xl mx-auto print:max-w-none">
 
         {/* ── Toolbar ─────────────────────────────────────────── */}
-        <div className="flex items-center justify-between mb-6 print:hidden">
+        <div className="no-print flex items-center justify-between mb-6 print:hidden">
           <button
             onClick={() => navigate(`/estimate/preview/${id}`)}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-white dark:hover:bg-gray-800 transition-colors"
@@ -150,15 +165,20 @@ export default function ContractPreview() {
             </svg>
             Back to Estimate
           </button>
-          <button
-            onClick={() => window.print()}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold transition-colors"
-          >
-            <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none">
-              <path d="M4 6V2h8v4M4 12H3a1 1 0 01-1-1V7a1 1 0 011-1h10a1 1 0 011 1v4a1 1 0 01-1 1h-1M4 9h8v5H4V9z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-            Print / PDF
-          </button>
+          <div className="flex flex-col items-end gap-1">
+            <button
+              onClick={handlePrint}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold transition-colors"
+            >
+              <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none">
+                <path d="M4 6V2h8v4M4 12H3a1 1 0 01-1-1V7a1 1 0 011-1h10a1 1 0 011 1v4a1 1 0 01-1 1h-1M4 9h8v5H4V9z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              Print / PDF
+            </button>
+            <p className="text-xs text-gray-400 dark:text-gray-500">
+              More settings → Save as PDF → Margins: Default → uncheck Headers and footers
+            </p>
+          </div>
         </div>
 
         {/* ── Contract Document ────────────────────────────────── */}
