@@ -37,11 +37,27 @@ function SectionHeader({ children }) {
   )
 }
 
-function SignatureLine({ label }) {
+// Signature + Date side by side on one line
+function SignatureWithDate({ label }) {
+  return (
+    <div className="flex items-end gap-4">
+      <div className="flex-1">
+        <div className="border-b border-gray-500 h-9 mb-1" />
+        <p className="text-xs text-gray-500 dark:text-gray-400">{label}</p>
+      </div>
+      <div className="w-36">
+        <div className="border-b border-gray-500 h-9 mb-1" />
+        <p className="text-xs text-gray-500 dark:text-gray-400">Date</p>
+      </div>
+    </div>
+  )
+}
+
+function PrintedNameLine() {
   return (
     <div>
       <div className="border-b border-gray-500 h-9 mb-1" />
-      <p className="text-xs text-gray-500 dark:text-gray-400">{label}</p>
+      <p className="text-xs text-gray-500 dark:text-gray-400">Printed Name</p>
     </div>
   )
 }
@@ -240,6 +256,7 @@ export default function ContractPreview() {
               Terms and Conditions
             </h2>
 
+            {/* 1 */}
             <section className="contract-section">
               <SectionHeader>Schedule of Progress Payments</SectionHeader>
               <p className="font-bold text-gray-900 dark:text-white">
@@ -247,6 +264,7 @@ export default function ContractPreview() {
               </p>
             </section>
 
+            {/* 2 */}
             <section className="contract-section">
               <SectionHeader>Payment Terms</SectionHeader>
               <p>
@@ -254,6 +272,7 @@ export default function ContractPreview() {
               </p>
             </section>
 
+            {/* 3 */}
             <section className="contract-section">
               <SectionHeader>Start and Completion of Work</SectionHeader>
               <p>
@@ -261,6 +280,7 @@ export default function ContractPreview() {
               </p>
             </section>
 
+            {/* 4 */}
             <section className="contract-section">
               <SectionHeader>Change Orders</SectionHeader>
               <p>
@@ -268,20 +288,44 @@ export default function ContractPreview() {
               </p>
             </section>
 
+            {/* 5 */}
             <section className="contract-section">
               <SectionHeader>Mechanics Lien Warning</SectionHeader>
+              <p className="font-semibold text-gray-900 dark:text-white mb-1">
+                NOTICE TO PROPERTY OWNER
+              </p>
               <p>
-                IMPORTANT INFORMATION FOR PROPERTY OWNER: If subcontractors or material suppliers are not paid by the contractor, they have the right to file a mechanics lien on your property. If a lien is filed and not released, you could be sued and lose your property. You can protect yourself from this situation by requiring your contractor to furnish a Preliminary 20-Day Notice from every subcontractor and material supplier. You can also protect yourself by issuing joint checks to pay contractors and material suppliers, and by getting lien releases from them before making any payments.
+                Anyone who helps improve your property, but who is not paid, may record what is called a mechanics' lien on your property. A mechanics' lien is a claim, like a mortgage or home equity loan, made against your property and recorded with the county recorder.
+              </p>
+              <p className="mt-2">
+                Even if you pay your contractor in full, unpaid subcontractors, suppliers, and laborers who helped to improve your property may record mechanics' liens and sue you in court to foreclose the lien. If a court finds the lien is valid, you could be forced to pay twice or have a court officer sell your home to pay the lien. Liens can also affect your credit.
+              </p>
+              <p className="mt-2 font-semibold text-gray-900 dark:text-white">
+                BE CAREFUL.
+              </p>
+              <p className="mt-1">
+                The Preliminary Notice can be sent up to 20 days after the subcontractor starts work. Lenders who help finance the improvement may also record liens. Protect yourself by requiring your contractor to provide a list of all subcontractors and material suppliers for this project. Obtain a signed lien release from every subcontractor and material supplier before making any payment. You may also consider issuing joint checks made payable to both the contractor and the subcontractor or supplier.
+              </p>
+              <p className="mt-2">
+                If you do not have a lien release from everyone who may file a lien, you should withhold payment until the contractor provides the releases or the time for filing the lien has expired. If the contractor fails to provide releases within a reasonable time, you may pay the subcontractors or suppliers directly to obtain releases and deduct those amounts from the total owed to the contractor.
+              </p>
+              <p className="mt-2">
+                For more information on mechanics' liens, contact the Contractors State License Board at www.cslb.ca.gov or 1-800-321-CSLB (2752).
               </p>
             </section>
 
+            {/* 6 */}
             <section className="contract-section">
               <SectionHeader>Three-Day Right to Cancel</SectionHeader>
               <p>
                 You, the buyer, have the right to cancel this contract within three business days. You may cancel by e-mailing, mailing, faxing, or delivering a written notice to the contractor at the contractor's place of business by midnight of the third business day after receiving a signed and dated copy of this contract that includes information about your right to cancel. Notice of cancellation, if sent by mail, is effective when deposited in the mail properly addressed with postage prepaid.
               </p>
+              <p className="mt-2">
+                If you cancel, the contractor must return to you anything you paid within 10 days of receiving the notice of cancellation. For a period of 10 days after the date of your notice of cancellation, you must make available to the contractor at your residence, in substantially as good condition as when received, any goods delivered to you under this contract or sale. Or you may, if you wish, comply with the contractor's instructions on how to return the goods at the contractor's expense and risk.
+              </p>
             </section>
 
+            {/* 7 */}
             <section className="contract-section">
               <SectionHeader>Contract Termination</SectionHeader>
               <p>
@@ -289,6 +333,7 @@ export default function ContractPreview() {
               </p>
             </section>
 
+            {/* 8 */}
             <section className="contract-section">
               <SectionHeader>Dispute Resolution</SectionHeader>
               <p>
@@ -296,6 +341,7 @@ export default function ContractPreview() {
               </p>
             </section>
 
+            {/* 9 */}
             <section className="contract-section">
               <SectionHeader>Warranty</SectionHeader>
               <p>
@@ -303,16 +349,19 @@ export default function ContractPreview() {
               </p>
             </section>
 
+            {/* 10 */}
             <section className="contract-section">
               <SectionHeader>Workers Compensation</SectionHeader>
               <p>{companyName} carries workers compensation insurance for all employees.</p>
             </section>
 
+            {/* 11 */}
             <section className="contract-section">
               <SectionHeader>Commercial General Liability</SectionHeader>
               <p>{companyName} carries commercial general liability insurance.</p>
             </section>
 
+            {/* 12 */}
             <section className="contract-section">
               <SectionHeader>Permits</SectionHeader>
               <p>
@@ -320,17 +369,91 @@ export default function ContractPreview() {
               </p>
             </section>
 
+            {/* 13 */}
             <section className="contract-section">
-              <SectionHeader>Media Release</SectionHeader>
+              <SectionHeader>Personal Property</SectionHeader>
               <p>
-                Customer grants permission to Contractor to use photographs, reviews, video for marketing materials and social media.
+                Customer agrees to relocate all furniture, clothing, plants, rugs, and all personal items away from the work area prior to the commencement of work. Contractor is not responsible for any damage to items that have not been removed from the work area prior to the start of the project.
               </p>
             </section>
 
+            {/* 14 */}
+            <section className="contract-section">
+              <SectionHeader>Access</SectionHeader>
+              <p>
+                Customer agrees to provide full access to the work area, including electricity, adequate lighting, and restroom facilities for all workers during the course of the project. Any delays caused by lack of access shall not be the responsibility of the Contractor and may result in schedule adjustments.
+              </p>
+            </section>
+
+            {/* 15 */}
+            <section className="contract-section">
+              <SectionHeader>Collections</SectionHeader>
+              <p>
+                In the event payment is not made as specified in this contract, Customer agrees to pay all reasonable costs of enforcement, including attorney's fees and court costs, incurred by Contractor in collecting any amounts due under this contract.
+              </p>
+            </section>
+
+            {/* 16 */}
+            <section className="contract-section">
+              <SectionHeader>Delays by Customer</SectionHeader>
+              <p>
+                If Customer delays the start of installation more than 30 days from the scheduled start date specified in this contract, Customer agrees to pay a delay fee of 1% of the total contract price per month until the project commences. Materials ordered and stored by Contractor on behalf of Customer during any such delay are stored at Customer's risk and expense.
+              </p>
+            </section>
+
+            {/* 17 */}
+            <section className="contract-section">
+              <SectionHeader>Consequential Damages</SectionHeader>
+              <p>
+                Contractor shall not be liable for delays or failure to perform caused by fire, strikes, accidents, severe weather conditions, material shortages, supply chain disruptions, acts of God, governmental actions, or any other cause beyond the Contractor's reasonable control. In no event shall Contractor be liable for any consequential, incidental, indirect, special, or punitive damages of any kind arising out of or relating to this contract.
+              </p>
+            </section>
+
+            {/* 18 */}
+            <section className="contract-section">
+              <SectionHeader>Flooring</SectionHeader>
+              <p>
+                All wood, engineered wood, and laminate flooring products may experience natural seasonal expansion and contraction due to changes in humidity and temperature. Gaps or separations that occur as a result of normal seasonal movement are not covered under warranty and are not the responsibility of the Contractor. Customer is advised to maintain consistent indoor humidity levels (35–55% relative humidity) as recommended by the flooring manufacturer.
+              </p>
+            </section>
+
+            {/* 19 */}
+            <section className="contract-section">
+              <SectionHeader>Cutting and Patching</SectionHeader>
+              <p>
+                Any cutting and patching required as part of this project may result in areas where color, texture, or finish may not match existing surfaces exactly. Contractor will make every reasonable effort to match existing finishes; however, an exact match cannot be guaranteed due to weathering, aging, paint dye lots, discontinued materials, and general availability of matching products.
+              </p>
+            </section>
+
+            {/* 20 */}
+            <section className="contract-section">
+              <SectionHeader>Work Done by Customer</SectionHeader>
+              <p>
+                If Customer performs any portion of the work that is included in the scope of this contract, no credit will be given for such work. The contract price remains as stated regardless of any work performed by the Customer or Customer's agents. Any work performed by the Customer that interferes with the Contractor's work may void the applicable warranty.
+              </p>
+            </section>
+
+            {/* 21 */}
+            <section className="contract-section">
+              <SectionHeader>Material</SectionHeader>
+              <p>
+                Any material remaining after the completion of the project belongs to the Contractor unless otherwise agreed in writing. An industry-standard overage of 10–15% is ordered for most materials to account for cuts, waste, defects, and future repairs. This overage is factored into the contract price. Contractor makes no representation that materials ordered will exactly match future production runs or dye lots.
+              </p>
+            </section>
+
+            {/* 22 */}
+            <section className="contract-section">
+              <SectionHeader>Media Release</SectionHeader>
+              <p>
+                Customer grants permission to Contractor to use photographs, reviews, and video of the completed project for marketing materials, website content, and social media. Customer's personal identifying information will not be published without separate written consent.
+              </p>
+            </section>
+
+            {/* 23 */}
             <section className="contract-section">
               <SectionHeader>Yard Sign</SectionHeader>
               <p>
-                Customer grants permission to Contractor to put up a yard sign for the duration of the project, unless restricted by an HOA.
+                Customer grants permission to Contractor to place a yard sign at the project location for the duration of the project, unless restricted by an HOA or local ordinance.
               </p>
             </section>
 
@@ -339,19 +462,17 @@ export default function ContractPreview() {
           {/* SIGNATURES */}
           <div className="px-10 pb-10 pt-4 border-t border-gray-200 dark:border-gray-800">
             <p className="text-xs text-gray-500 dark:text-gray-400 mb-8">
-              By signing below, the parties agree to all terms and conditions stated in this contract.
+              By signing below, the parties agree to all terms and conditions stated in this contract. Each party acknowledges receipt of a completed copy of this contract at the time of signing.
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-              <div className="space-y-7">
-                <SignatureLine label="Customer Signature" />
-                <SignatureLine label="Printed Name" />
-                <SignatureLine label="Date" />
+              <div className="space-y-6">
+                <SignatureWithDate label="Customer Signature" />
+                <PrintedNameLine />
               </div>
-              <div className="space-y-7">
-                <SignatureLine label="Contractor Signature" />
-                <SignatureLine label="Printed Name" />
-                <SignatureLine label="Date" />
+              <div className="space-y-6">
+                <SignatureWithDate label="Contractor Signature" />
+                <PrintedNameLine />
               </div>
             </div>
 
