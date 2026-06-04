@@ -33,7 +33,34 @@ function labelField(field, value) {
   return value ? `${field.label}: ${value}` : null
 }
 
-export function buildUserPrompt(estimate) {
+function formatTemplateItems(items) {
+  if (!items || items.length === 0) return ''
+
+  const lines = items.map((item) => {
+    const rate = item.base_rate ?? item.labor_rate ?? item.material_rate
+    const rateStr = rate != null ? `$${rate}/${item.unit || 'EA'}` : 'TBD'
+    const minStr = item.min_amount ? ` (min $${item.min_amount.toLocaleString()})` : ''
+    const noteStr = item.notes
+      ? ` | Note: ${item.notes.split(/\r?\n/)[0].slice(0, 80)}`
+      : ''
+    const cat = item.subcategory
+      ? `${item.category} > ${item.subcategory}`
+      : item.category
+    return `[${cat}] ${item.name} — ${rateStr}${minStr}${noteStr}`
+  })
+
+  return `
+Here are the available line items from our template for this work type.
+SELECT only the items that are relevant for this specific project based on the measurements provided.
+MODIFY the description to include the specific quantities, dimensions and materials for this project.
+DO NOT invent items not in this list unless absolutely necessary.
+
+AVAILABLE TEMPLATE ITEMS:
+${lines.join('\n')}
+`
+}
+
+export function buildUserPrompt(estimate, templateItems = []) {
   const config = getConfig(estimate.workType)
   const region = US_REGIONS.find((r) => r.id === estimate.region)
 
@@ -58,7 +85,7 @@ ${measurementLines || 'No measurements recorded'}
 
 FIELD OBSERVATIONS:
 ${estimate.notes || 'None'}
-
+${formatTemplateItems(templateItems)}
 Use the measurements to calculate realistic quantities and rates.
 IMPORTANT: Return BASE rates only — do NOT apply the ×${region?.multiplier?.toFixed(2) ?? '1.00'} regional multiplier to any rate or total. Set subtotal = sum of all item totals at base rates.
 

@@ -8,11 +8,11 @@ import { getConfig } from '../lib/measurementConfigs'
 import { anthropic } from '../lib/anthropic'
 import { SYSTEM_PROMPT, buildUserPrompt } from '../lib/buildPrompt'
 import { supabase } from '../lib/supabase'
-import { saveProject, saveEstimate } from '../lib/db'
+import { saveProject, saveEstimate, getTemplateItems } from '../lib/db'
 
 // ── Anthropic API call ─────────────────────────────────────────────────────
-async function generateEstimate(estimate) {
-  const userPrompt = buildUserPrompt(estimate)
+async function generateEstimate(estimate, templateItems) {
+  const userPrompt = buildUserPrompt(estimate, templateItems)
 
   const message = await anthropic.messages.create({
     model: 'claude-sonnet-4-6',
@@ -110,7 +110,15 @@ export default function Step4Review() {
     setLoading(true)
     setError(null)
     try {
-      const result = await generateEstimate(estimate)
+      // Fetch matching template items for this work type (silently ignore if unavailable)
+      let templateItems = []
+      try {
+        templateItems = await getTemplateItems(estimate.workType)
+      } catch {
+        // non-fatal — proceed without template items
+      }
+
+      const result = await generateEstimate(estimate, templateItems)
       updateEstimate({ generatedEstimate: result })
 
       // Save to Supabase

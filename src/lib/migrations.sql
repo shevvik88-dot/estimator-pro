@@ -82,3 +82,20 @@ CREATE POLICY "Users own their prices" ON price_overrides FOR ALL USING (auth.ui
 
 -- ── Contract tracking ──────────────────────────────────────────────────────
 ALTER TABLE estimates ADD COLUMN IF NOT EXISTS contract_generated boolean DEFAULT false;
+
+-- ── Template Items (ADU price book) ────────────────────────────────────────
+CREATE TABLE template_items (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  category text NOT NULL,
+  subcategory text,
+  name text NOT NULL,
+  description text,
+  unit text,
+  labor_rate numeric,
+  material_rate numeric,
+  base_rate numeric,
+  min_amount numeric,
+  notes text,
+  work_types text[],
+  sort_order int DEFAULT 0
+);

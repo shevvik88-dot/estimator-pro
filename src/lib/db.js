@@ -95,3 +95,35 @@ export async function markContractGenerated(estimateId) {
     .eq('id', estimateId)
   if (error) throw error
 }
+
+// Maps work type IDs to their relevant template_items categories
+const WORK_TYPE_CATEGORIES = {
+  'roof-replacement':  ['ROOF'],
+  'lvp-flooring':      ['FLOOR', 'BASEBOARDS'],
+  'exterior-paint':    ['EXTERIOR SURFACE RESTORATION'],
+  'drywall':           ['INTERIOR SURFACE RESTORATION'],
+  'windows-doors':     ['WINDOWS & PATIO DOORS', 'DOORS'],
+  'kitchen-remodel':   ['KITCHEN', 'FRAMING| REMODEL', 'PLUMBING', 'ELECTRICAL'],
+  'bathroom-remodel':  ['BATHROOM 1', 'BATHROOM 2', 'PLUMBING', 'ELECTRICAL'],
+  'patio-hardscape':   ['HARDSCAPE | DRIVEWAY | DECK'],
+  'adu':               null, // null = fetch all categories
+}
+
+export async function getTemplateItems(workType) {
+  if (!(workType in WORK_TYPE_CATEGORIES)) return []
+
+  const categories = WORK_TYPE_CATEGORIES[workType]
+
+  let query = supabase
+    .from('template_items')
+    .select('name, category, subcategory, unit, base_rate, labor_rate, material_rate, min_amount, notes')
+    .order('sort_order')
+
+  if (categories !== null) {
+    query = query.in('category', categories)
+  }
+
+  const { data, error } = await query
+  if (error) throw error
+  return data ?? []
+}
