@@ -140,6 +140,17 @@ export default function Step4Review() {
       }
 
       const result = await generateEstimate(estimate, templateItems)
+
+      // Post-process: strip baseboard/trim sections unless field notes mention them
+      const notesHaveBaseboards = /baseboard/i.test(estimate.notes || '')
+      if (!notesHaveBaseboards && result.sections) {
+        result.sections = result.sections.filter((s) => !/baseboard|trim/i.test(s.name))
+        result.subtotal = result.sections.reduce(
+          (sum, s) => sum + (s.items ?? []).reduce((acc, item) => acc + (item.total ?? 0), 0),
+          0
+        )
+      }
+
       updateEstimate({ generatedEstimate: result })
 
       const computedTotal = Math.round(result.subtotal * (result.multiplier || 1))
