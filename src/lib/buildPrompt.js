@@ -94,10 +94,10 @@ You MUST produce separate line items in this exact order — no exceptions:
 3. MOISTURE BARRIER / UNDERLAYMENT — per SF, minimum $0.35/SF
 4. LVP INSTALLATION (LABOR) — per SF, minimum $2.50/SF
 5. LVP MATERIAL — per SF with 10% waste factor included in qty, minimum $3.50/SF
-6. BASEBOARDS & TRIM (LABOR) — per LF, minimum $3.50/LF (include unless field notes say existing baseboards to remain)
-7. BASEBOARDS & TRIM (MATERIAL) — per LF, minimum $2.00/LF (same condition as labor)
-8. TRANSITION STRIPS — per EA, minimum $45/EA
-9. CLEANUP & HAUL-OFF — 1 LS, minimum $250
+6. TRANSITION STRIPS — per EA, minimum $45/EA
+7. CLEANUP & HAUL-OFF — 1 LS, minimum $250
+
+Do NOT include baseboard or trim line items unless the field observations/notes specifically mention them. Baseboards are a separate scope of work.
 `
 }
 
