@@ -78,6 +78,8 @@ You MUST produce separate line items for each of the following — no exceptions
 10. DOWNSPOUTS — per EA
 11. CLEANUP & FINAL INSPECTION — 1 LS
 12. PROJECT PREPARATION (permits management) — 1 EA
+
+For Building Permits & Fees: calculate as 0.5% of the estimated subtotal before regional adjustment. Do NOT set rate to $0. Example: if subtotal is $15,000, permits = $75 EA with qty 1. Use a fixed allowance of $500-800 for residential projects under $30k.
 `
 }
 
