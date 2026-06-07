@@ -25,6 +25,10 @@ const inputCls = (hasValue) =>
       : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder:text-gray-300 dark:placeholder:text-gray-600'
   }`
 
+const DEFAULT_CATEGORIES = [
+  'ROOF', 'FLOOR', 'DEMOLITION', 'ELECTRICAL', 'PLUMBING', 'DOORS', 'WINDOWS & PATIO DOORS',
+]
+
 function CategoryCard({ category, items, customRates, onRateChange, onRemove }) {
   return (
     <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm overflow-hidden">
@@ -190,27 +194,32 @@ export default function MyPrices() {
         ])
         setAllCategories(categories)
 
+        // Build custom rates map from saved prices
         if (prices.length > 0) {
           const rateMap = {}
           prices.forEach((p) => { rateMap[p.template_item_id] = String(p.custom_rate) })
           setCustomRates(rateMap)
+        }
 
-          // Resolve which categories are active by looking up those template item IDs
+        // Always start with defaults; append any extra saved categories not in defaults
+        const catsToShow = [...DEFAULT_CATEGORIES]
+        if (prices.length > 0) {
           const { data: priceItems, error: piErr } = await supabase
             .from('template_items')
             .select('id, category')
             .in('id', prices.map((p) => p.template_item_id))
           if (piErr) throw piErr
-
-          const uniqueCats = [...new Set(priceItems.map((item) => item.category))]
-
-          const itemsMap = {}
-          await Promise.all(uniqueCats.map(async (cat) => {
-            itemsMap[cat] = await getTemplateItemsByCategory(cat)
-          }))
-          setAddedCategories(uniqueCats)
-          setCategoryItems(itemsMap)
+          for (const { category } of priceItems) {
+            if (!catsToShow.includes(category)) catsToShow.push(category)
+          }
         }
+
+        const itemsMap = {}
+        await Promise.all(catsToShow.map(async (cat) => {
+          itemsMap[cat] = await getTemplateItemsByCategory(cat)
+        }))
+        setAddedCategories(catsToShow)
+        setCategoryItems(itemsMap)
       } catch (err) {
         setError(err.message)
       } finally {
