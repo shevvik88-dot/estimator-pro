@@ -96,6 +96,14 @@ export async function deleteEstimate(estimateId) {
   if (error) throw error
 }
 
+export async function deleteProject(projectId) {
+  const { error } = await supabase
+    .from('projects')
+    .delete()
+    .eq('id', projectId)
+  if (error) throw error
+}
+
 export async function markContractGenerated(estimateId) {
   const { error } = await supabase
     .from('estimates')

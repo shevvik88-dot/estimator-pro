@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
-import { getProjects, deleteEstimate } from '../lib/db'
+import { getProjects, deleteEstimate, deleteProject } from '../lib/db'
+import { useEstimate } from '../context/EstimateContext'
 
 const WORK_TYPE_LABELS = {
   'roof-replacement': 'Roof Replacement',
@@ -32,20 +33,39 @@ function formatDate(iso) {
 }
 
 export default function Projects() {
+  const navigate = useNavigate()
+  const { updateEstimate } = useEstimate()
   const [projects, setProjects] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-  const [confirmDelete, setConfirmDelete] = useState(null) // { estimateId, projectId }
+  const [confirmDelete, setConfirmDelete] = useState(null) // { estimateId: string|null, projectId: string }
 
   async function handleDelete() {
     const { estimateId, projectId } = confirmDelete
     setConfirmDelete(null)
     setProjects(prev => prev.filter(p => p.id !== projectId))
     try {
-      await deleteEstimate(estimateId)
+      if (estimateId) {
+        await deleteEstimate(estimateId)
+      } else {
+        await deleteProject(projectId)
+      }
     } catch (err) {
       console.error('Delete failed:', err)
     }
+  }
+
+  function handleGenerateEstimate(project) {
+    updateEstimate({
+      clientName:     project.client_name || '',
+      clientEmail:    project.client_email || '',
+      clientPhone:    project.client_phone || '',
+      projectAddress: project.project_address || '',
+      city:           project.city || '',
+      state:          project.state || '',
+      region:         project.region || '',
+    })
+    navigate('/new-estimate/1', { state: { skipReset: true } })
   }
 
   useEffect(() => {
@@ -136,17 +156,15 @@ export default function Projects() {
                       <span className={`text-xs font-medium px-2 py-0.5 rounded-full capitalize ${statusStyle}`}>
                         {project.status}
                       </span>
-                      {latestEstimate && (
-                        <button
-                          onClick={() => setConfirmDelete({ estimateId: latestEstimate.id, projectId: project.id })}
-                          className="p-1 rounded text-gray-300 hover:text-red-500 dark:text-gray-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
-                          title="Delete estimate"
-                        >
-                          <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none">
-                            <path d="M2 4h12M6 4V2.5a.5.5 0 01.5-.5h3a.5.5 0 01.5.5V4M5 4l.5 9h5L11 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                          </svg>
-                        </button>
-                      )}
+                      <button
+                        onClick={() => setConfirmDelete({ estimateId: latestEstimate?.id ?? null, projectId: project.id })}
+                        className="p-1 rounded text-gray-300 hover:text-red-500 dark:text-gray-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                        title="Delete"
+                      >
+                        <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none">
+                          <path d="M2 4h12M6 4V2.5a.5.5 0 01.5-.5h3a.5.5 0 01.5.5V4M5 4l.5 9h5L11 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      </button>
                     </div>
                   </div>
 
@@ -182,7 +200,12 @@ export default function Projects() {
                       View estimate →
                     </Link>
                   ) : (
-                    <span className="text-sm text-gray-400 dark:text-gray-500">No estimate yet</span>
+                    <button
+                      onClick={() => handleGenerateEstimate(project)}
+                      className="text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:underline"
+                    >
+                      Generate Estimate →
+                    </button>
                   )}
                 </div>
               </div>
