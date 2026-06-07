@@ -114,8 +114,10 @@ export default function Step4Review() {
       let templateItems = []
       try {
         templateItems = await getTemplateItems(estimate.workType)
+        console.log(`[buildPrompt] template_items fetched for "${estimate.workType}":`, templateItems.length, templateItems)
       } catch {
         // non-fatal — proceed without template items
+        console.warn(`[buildPrompt] failed to fetch template_items for "${estimate.workType}"`)
       }
 
       const result = await generateEstimate(estimate, templateItems)

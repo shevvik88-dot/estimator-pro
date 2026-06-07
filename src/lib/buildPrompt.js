@@ -50,10 +50,10 @@ function formatTemplateItems(items) {
   })
 
   return `
-Here are the available line items from our template for this work type.
+CRITICAL: Use ONLY the unit rates from the template items provided below. Do not invent or estimate rates. If a line item matches a template item, use that exact rate. Asphalt shingle installation should be $4.50-5.00/SF minimum for Sacramento market.
 SELECT only the items that are relevant for this specific project based on the measurements provided.
 MODIFY the description to include the specific quantities, dimensions and materials for this project.
-DO NOT invent items not in this list unless absolutely necessary.
+DO NOT invent rates — every rate must come from the list below.
 
 AVAILABLE TEMPLATE ITEMS:
 ${lines.join('\n')}
