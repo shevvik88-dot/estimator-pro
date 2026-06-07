@@ -51,6 +51,7 @@ export default function Step2Project() {
   const [errors, setErrors] = useState({})
   // track whether title has been manually edited so we don't overwrite
   const titleEdited = useRef(!!estimate.projectTitle)
+  const dateRef = useRef(null)
 
   function handleSelectWorkType(id) {
     setFields((prev) => {
@@ -164,13 +165,16 @@ export default function Step2Project() {
         {/* ── Start Date ────────────────────────────────────────── */}
         <div className="mb-5">
           <label className={label}>Approximate Start Date</label>
-          <input
-            type="date"
-            name="startDate"
-            value={fields.startDate}
-            onChange={handleChange}
-            className={input}
-          />
+          <div onClick={() => dateRef.current?.showPicker()} className="cursor-pointer">
+            <input
+              ref={dateRef}
+              type="date"
+              name="startDate"
+              value={fields.startDate}
+              onChange={handleChange}
+              className={`${input} cursor-pointer`}
+            />
+          </div>
         </div>
 
         {/* ── Field Notes ───────────────────────────────────────── */}
