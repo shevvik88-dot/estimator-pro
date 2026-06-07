@@ -83,6 +83,24 @@ For Building Permits & Fees: calculate as 0.5% of the estimated subtotal before 
 `
 }
 
+function getLVPSectionGuide() {
+  return `
+REQUIRED SECTION BREAKDOWN FOR LVP FLOORING:
+Never combine multiple scopes into a single line item. Labor and material must always be separate line items. Never use a flat EA rate for SF-based work. Use rates from the template_items table; the minimums below are floors — do not go below them.
+
+You MUST produce separate line items in this exact order — no exceptions:
+1. DEMOLITION & REMOVAL — per SF; rate by existing floor type: carpet $1.50/SF, LVP/vinyl $1.75/SF, hardwood $2.50/SF, tile $3.50/SF (minimum $1.50/SF)
+2. SUBFLOOR PREPARATION — inspect, clean, nail pops, leveling per SF, minimum $0.75/SF
+3. MOISTURE BARRIER / UNDERLAYMENT — per SF, minimum $0.35/SF
+4. LVP INSTALLATION (LABOR) — per SF, minimum $2.50/SF
+5. LVP MATERIAL — per SF with 10% waste factor included in qty, minimum $3.50/SF
+6. BASEBOARDS & TRIM (LABOR) — per LF, minimum $3.50/LF (include unless field notes say existing baseboards to remain)
+7. BASEBOARDS & TRIM (MATERIAL) — per LF, minimum $2.00/LF (same condition as labor)
+8. TRANSITION STRIPS — per EA, minimum $45/EA
+9. CLEANUP & HAUL-OFF — 1 LS, minimum $250
+`
+}
+
 export function buildUserPrompt(estimate, templateItems = []) {
   const config = getConfig(estimate.workType)
   const region = US_REGIONS.find((r) => r.id === estimate.region)
@@ -95,7 +113,10 @@ export function buildUserPrompt(estimate, templateItems = []) {
   const address = [estimate.projectAddress, estimate.city, estimate.state]
     .filter(Boolean).join(', ')
 
-  const workTypeGuide = estimate.workType === 'roof-replacement' ? getRoofSectionGuide() : ''
+  const workTypeGuide =
+    estimate.workType === 'roof-replacement' ? getRoofSectionGuide() :
+    estimate.workType === 'lvp-flooring'     ? getLVPSectionGuide() :
+    ''
 
   return `Generate a professional construction estimate for the following project:
 
