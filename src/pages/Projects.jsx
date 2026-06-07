@@ -6,9 +6,16 @@ import { useEstimate } from '../context/EstimateContext'
 
 const WORK_TYPE_LABELS = {
   'roof-replacement': 'Roof Replacement',
-  'kitchen-remodel': 'Kitchen Remodel',
+  'kitchen-remodel':  'Kitchen Remodel',
   'bathroom-remodel': 'Bathroom Remodel',
-  'addition': 'Addition',
+  'lvp-flooring':     'LVP Flooring',
+  'windows-doors':    'Windows & Doors',
+  'drywall':          'Drywall',
+  'exterior-paint':   'Exterior Paint',
+  'patio-hardscape':  'Patio / Hardscape',
+  'adu':              'ADU',
+  'addition':         'Addition',
+  'other':            'Other',
 }
 
 const STATUS_STYLES = {
