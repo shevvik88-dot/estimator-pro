@@ -85,6 +85,8 @@ For Building Permits & Fees: calculate as 0.5% of the estimated subtotal before 
 
 function getLVPSectionGuide() {
   return `
+⚠️ STRICT RULE: Do NOT include any baseboard, trim, or molding line items in this estimate. Baseboards are a completely separate scope of work. Even if you think they are needed, DO NOT add them. This rule has no exceptions unless the word "baseboard" appears in the contractor's field notes.
+
 REQUIRED SECTION BREAKDOWN FOR LVP FLOORING:
 Never combine multiple scopes into a single line item. Labor and material must always be separate line items. Never use a flat EA rate for SF-based work. Use rates from the template_items table; the minimums below are floors — do not go below them.
 
