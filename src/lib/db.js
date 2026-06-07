@@ -106,7 +106,7 @@ export async function markContractGenerated(estimateId) {
 
 // Maps work type IDs to their relevant template_items categories
 const WORK_TYPE_CATEGORIES = {
-  'roof-replacement':  ['ROOF'],
+  'roof-replacement':  ['ROOF LABOR & MATERIAL', 'DEMOLITION LABOR', 'PROJECT PREPARATION', 'HARDSCAPE | DRIVEWAY | DECK LABOR & MATERIAL'],
   'lvp-flooring':      ['FLOOR', 'BASEBOARDS'],
   'exterior-paint':    ['EXTERIOR SURFACE RESTORATION'],
   'drywall':           ['INTERIOR SURFACE RESTORATION'],
