@@ -133,7 +133,7 @@ export async function getTemplateItems(workType) {
   let query = supabase
     .from('template_items')
     .select('name, category, subcategory, unit, base_rate, labor_rate, material_rate, min_amount, notes')
-    .order('sort_order')
+    .order('category')
 
   if (categories !== null) {
     query = query.in('category', categories)
