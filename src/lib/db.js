@@ -96,6 +96,56 @@ export async function deleteEstimate(estimateId) {
   if (error) throw error
 }
 
+export async function getDistinctCategories() {
+  const { data, error } = await supabase
+    .from('template_items')
+    .select('category')
+    .order('category')
+  if (error) throw error
+  const seen = new Set()
+  return (data ?? []).reduce((acc, { category }) => {
+    if (!seen.has(category)) { seen.add(category); acc.push(category) }
+    return acc
+  }, [])
+}
+
+export async function getTemplateItemsByCategory(category) {
+  const { data, error } = await supabase
+    .from('template_items')
+    .select('id, name, category, subcategory, unit, base_rate, labor_rate, material_rate, min_amount, notes')
+    .eq('category', category)
+    .order('name')
+  if (error) throw error
+  return data ?? []
+}
+
+export async function getUserPrices(userId) {
+  const { data, error } = await supabase
+    .from('user_prices')
+    .select('template_item_id, custom_rate')
+    .eq('user_id', userId)
+  if (error) throw error
+  return data ?? []
+}
+
+export async function upsertUserPrices(rows) {
+  if (!rows.length) return
+  const { error } = await supabase
+    .from('user_prices')
+    .upsert(rows, { onConflict: 'user_id,template_item_id' })
+  if (error) throw error
+}
+
+export async function deleteUserPrices(userId, templateItemIds) {
+  if (!templateItemIds.length) return
+  const { error } = await supabase
+    .from('user_prices')
+    .delete()
+    .eq('user_id', userId)
+    .in('template_item_id', templateItemIds)
+  if (error) throw error
+}
+
 export async function deleteProject(projectId) {
   const { error } = await supabase
     .from('projects')
@@ -132,7 +182,7 @@ export async function getTemplateItems(workType) {
 
   let query = supabase
     .from('template_items')
-    .select('name, category, subcategory, unit, base_rate, labor_rate, material_rate, min_amount, notes')
+    .select('id, name, category, subcategory, unit, base_rate, labor_rate, material_rate, min_amount, notes')
     .order('category')
 
   if (categories !== null) {

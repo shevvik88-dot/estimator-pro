@@ -8,7 +8,7 @@ import { getConfig } from '../lib/measurementConfigs'
 import { anthropic } from '../lib/anthropic'
 import { SYSTEM_PROMPT, buildUserPrompt } from '../lib/buildPrompt'
 import { supabase } from '../lib/supabase'
-import { saveProject, saveEstimate, getTemplateItems } from '../lib/db'
+import { saveProject, saveEstimate, getTemplateItems, getUserPrices } from '../lib/db'
 
 // ── Anthropic API call ─────────────────────────────────────────────────────
 async function generateEstimate(estimate, templateItems) {
@@ -111,6 +111,9 @@ export default function Step4Review() {
     setLoading(true)
     setError(null)
     try {
+      const { data: { session } } = await supabase.auth.getSession()
+      const userId = session?.user?.id
+
       // Fetch matching template items for this work type (silently ignore if unavailable)
       let templateItems = []
       try {
@@ -121,12 +124,23 @@ export default function Step4Review() {
         console.warn(`[buildPrompt] failed to fetch template_items for "${estimate.workType}"`)
       }
 
+      // Apply user's custom price overrides
+      if (userId && templateItems.length > 0) {
+        try {
+          const userPrices = await getUserPrices(userId)
+          if (userPrices.length > 0) {
+            const priceMap = Object.fromEntries(userPrices.map((p) => [p.template_item_id, p.custom_rate]))
+            templateItems = templateItems.map((item) =>
+              priceMap[item.id] !== undefined ? { ...item, base_rate: priceMap[item.id] } : item
+            )
+          }
+        } catch {
+          // non-fatal — continue with default rates
+        }
+      }
+
       const result = await generateEstimate(estimate, templateItems)
       updateEstimate({ generatedEstimate: result })
-
-      // Save to Supabase
-      const { data: { session } } = await supabase.auth.getSession()
-      const userId = session?.user?.id
 
       const computedTotal = Math.round(result.subtotal * (result.multiplier || 1))
 
