@@ -179,7 +179,7 @@ export default function EstimatePreview() {
               </span>
               {profile?.license_number && (
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                  License {profile.license_number}
+                  CA License #{profile.license_number}
                 </p>
               )}
               {profile?.phone && (
@@ -205,7 +205,7 @@ export default function EstimatePreview() {
               <p className="text-sm font-semibold text-gray-900 dark:text-white">{estimate.clientName}</p>
               {estimate.clientEmail && <p className="text-sm text-gray-500 dark:text-gray-400">{estimate.clientEmail}</p>}
               {estimate.clientPhone && <p className="text-sm text-gray-500 dark:text-gray-400">{estimate.clientPhone}</p>}
-              {estimate.projectAddress && (
+              {(estimate.projectAddress || estimate.city) && (
                 <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                   {[estimate.projectAddress, estimate.city, estimate.state].filter(Boolean).join(', ')}
                 </p>
@@ -224,7 +224,11 @@ export default function EstimatePreview() {
 
           {/* Line items */}
           <div className="p-8">
-            {gen.sections?.map((section) => (
+            {[...(gen.sections ?? [])].sort((a, b) => {
+              if (a.name === 'PROJECT PREPARATION') return -1
+              if (b.name === 'PROJECT PREPARATION') return 1
+              return 0
+            }).map((section) => (
               <div key={section.name} className="mb-8 last:mb-0">
                 <div className="flex items-center gap-3 mb-3">
                   <h3 className="text-sm font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
