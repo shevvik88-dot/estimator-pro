@@ -72,10 +72,10 @@ You MUST produce separate line items for each of the following — no exceptions
 4. ICE/WATER SHIELD — per SF (separate from underlayment)
 5. ASPHALT SHINGLE INSTALLATION — per SF
 6. DRIP EDGE — per LF
-7. STEP/COUNTER FLASHING — per LF
+7. STEP/COUNTER FLASHING — per LF, minimum $12/LF
 8. ROOF JACKS / PIPE BOOTS — per EA, rate $95–$150 EA
 9. GUTTERS — per LF
-10. DOWNSPOUTS — per EA
+10. DOWNSPOUTS — per EA, minimum $85 EA
 11. CLEANUP & FINAL INSPECTION — 1 LS
 12. PROJECT PREPARATION (permits management) — 1 EA
 
