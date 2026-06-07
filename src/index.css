@@ -7,11 +7,12 @@
 }
 
 @media print {
-  @page { margin: 0.75in; }
+  @page { margin: 1cm; }
   html, body { height: auto !important; overflow: visible !important; }
   body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   aside { display: none !important; }
   main { overflow: visible !important; height: auto !important; }
   .contract-doc { overflow: visible !important; height: auto !important; }
   .contract-section { break-inside: avoid; }
+  a[href]:after { content: none !important; }
 }

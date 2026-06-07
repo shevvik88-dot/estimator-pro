@@ -140,7 +140,7 @@ export default function ContractPreview() {
   const completionDays = total > 10000 ? 30 : 14
   const completionDate = addDays(startDate, completionDays)
 
-  const companyName = profile?.company_name || 'West Point Interiors Inc.'
+  const companyName = profile?.company_name || 'Your Company'
   const licenseNum = profile?.license_number || ''
   const contractorPhone = profile?.phone || ''
   const contractorAddress = [profile?.address, profile?.city, profile?.state]
