@@ -60,6 +60,27 @@ ${lines.join('\n')}
 `
 }
 
+function getRoofSectionGuide() {
+  return `
+REQUIRED SECTION BREAKDOWN FOR ROOF REPLACEMENT:
+Never combine multiple scopes into a single line item. Each trade category must be its own section with its own header. Use rates from the template_items table. Roof jacks should be $95-150 EA.
+
+You MUST produce separate line items for each of the following — no exceptions:
+1. TEAR-OFF & DISPOSAL — per SF
+2. DECK INSPECTION & PREPARATION — per SF
+3. UNDERLAYMENT — per SF (separate from ice/water shield)
+4. ICE/WATER SHIELD — per SF (separate from underlayment)
+5. ASPHALT SHINGLE INSTALLATION — per SF
+6. DRIP EDGE — per LF
+7. STEP/COUNTER FLASHING — per LF
+8. ROOF JACKS / PIPE BOOTS — per EA, rate $95–$150 EA
+9. GUTTERS — per LF
+10. DOWNSPOUTS — per EA
+11. CLEANUP & FINAL INSPECTION — 1 LS
+12. PROJECT PREPARATION (permits management) — 1 EA
+`
+}
+
 export function buildUserPrompt(estimate, templateItems = []) {
   const config = getConfig(estimate.workType)
   const region = US_REGIONS.find((r) => r.id === estimate.region)
@@ -71,6 +92,8 @@ export function buildUserPrompt(estimate, templateItems = []) {
 
   const address = [estimate.projectAddress, estimate.city, estimate.state]
     .filter(Boolean).join(', ')
+
+  const workTypeGuide = estimate.workType === 'roof-replacement' ? getRoofSectionGuide() : ''
 
   return `Generate a professional construction estimate for the following project:
 
@@ -85,7 +108,7 @@ ${measurementLines || 'No measurements recorded'}
 
 FIELD OBSERVATIONS:
 ${estimate.notes || 'None'}
-${formatTemplateItems(templateItems)}
+${formatTemplateItems(templateItems)}${workTypeGuide}
 Use the measurements to calculate realistic quantities and rates.
 IMPORTANT: Return BASE rates only — do NOT apply the ×${region?.multiplier?.toFixed(2) ?? '1.00'} regional multiplier to any rate or total. Set subtotal = sum of all item totals at base rates.
 
