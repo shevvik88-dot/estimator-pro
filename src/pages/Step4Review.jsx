@@ -12,6 +12,7 @@ import { saveProject, saveEstimate, getTemplateItems } from '../lib/db'
 
 // ── Anthropic API call ─────────────────────────────────────────────────────
 async function generateEstimate(estimate, templateItems) {
+  console.log(`[AI call] workType="${estimate.workType}" | template_items count:`, templateItems.length, templateItems)
   const userPrompt = buildUserPrompt(estimate, templateItems)
 
   const message = await anthropic.messages.create({
