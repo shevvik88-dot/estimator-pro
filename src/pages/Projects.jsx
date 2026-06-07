@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
-import { getProjects } from '../lib/db'
+import { getProjects, deleteEstimate } from '../lib/db'
 
 const WORK_TYPE_LABELS = {
   'roof-replacement': 'Roof Replacement',
@@ -35,6 +35,18 @@ export default function Projects() {
   const [projects, setProjects] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [confirmDelete, setConfirmDelete] = useState(null) // { estimateId, projectId }
+
+  async function handleDelete() {
+    const { estimateId, projectId } = confirmDelete
+    setConfirmDelete(null)
+    setProjects(prev => prev.filter(p => p.id !== projectId))
+    try {
+      await deleteEstimate(estimateId)
+    } catch (err) {
+      console.error('Delete failed:', err)
+    }
+  }
 
   useEffect(() => {
     async function load() {
@@ -120,9 +132,22 @@ export default function Projects() {
                     <p className="text-base font-semibold text-gray-900 dark:text-white leading-snug">
                       {project.client_name}
                     </p>
-                    <span className={`shrink-0 text-xs font-medium px-2 py-0.5 rounded-full capitalize ${statusStyle}`}>
-                      {project.status}
-                    </span>
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      <span className={`text-xs font-medium px-2 py-0.5 rounded-full capitalize ${statusStyle}`}>
+                        {project.status}
+                      </span>
+                      {latestEstimate && (
+                        <button
+                          onClick={() => setConfirmDelete({ estimateId: latestEstimate.id, projectId: project.id })}
+                          className="p-1 rounded text-gray-300 hover:text-red-500 dark:text-gray-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                          title="Delete estimate"
+                        >
+                          <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none">
+                            <path d="M2 4h12M6 4V2.5a.5.5 0 01.5-.5h3a.5.5 0 01.5.5V4M5 4l.5 9h5L11 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                          </svg>
+                        </button>
+                      )}
+                    </div>
                   </div>
 
                   <p className="text-xs font-medium text-indigo-600 dark:text-indigo-400 mb-1">
@@ -163,6 +188,29 @@ export default function Projects() {
               </div>
             )
           })}
+        </div>
+      )}
+
+      {confirmDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+          <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-xl p-6 w-full max-w-sm mx-4">
+            <p className="text-base font-semibold text-gray-900 dark:text-white mb-1">Delete this estimate?</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">This cannot be undone.</p>
+            <div className="flex gap-3 justify-end">
+              <button
+                onClick={() => setConfirmDelete(null)}
+                className="px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDelete}
+                className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white text-sm font-semibold transition-colors"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
