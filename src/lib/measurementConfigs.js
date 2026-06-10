@@ -95,6 +95,67 @@ export const MEASUREMENT_CONFIGS = {
         options: ['LVP', 'Hardwood', 'Tile', 'Carpet', 'Unknown'],
         hint: 'Removal cost and subfloor prep varies by material. Tile has highest removal cost.',
       },
+      {
+        key: '__lvpDemo', type: 'computed',
+        rateLabel: 'Demo & removal',
+        sourceField: 'floorAreaSF',
+        rateField: 'existingFloorType',
+        defaultRate: 1.50,
+        materialRates: {
+          'Carpet':   1.50,
+          'LVP':      1.75,
+          'Hardwood': 2.50,
+          'Tile':     3.50,
+          'Unknown':  1.50,
+        },
+      },
+    ],
+  },
+
+  'kitchen-remodel': {
+    name: 'Kitchen Remodel',
+    title: 'Kitchen Measurements',
+    fields: [
+      {
+        key: 'cabinetRunLF', label: 'Cabinet Run', unit: 'LF', type: 'number', required: true,
+        hint: 'Total linear feet of base and upper cabinets combined.',
+        rate: 65, rateLabel: 'Cabinet install (labor)',
+      },
+      {
+        key: 'cabinetType', label: 'Cabinet Type', type: 'select',
+        options: ['RTA Stock', 'Semi-Custom', 'Custom'],
+        hint: 'Affects material cost. Installation labor rate is the same across grades.',
+      },
+      {
+        key: 'countertopType', label: 'Countertop Type', type: 'select',
+        options: ['Homeowner Supplied', 'Laminate', 'Quartz', 'Granite'],
+        hint: 'Homeowner-supplied means the slab is provided — contractor installs only.',
+      },
+      {
+        key: 'countertopLF', label: 'Countertop', unit: 'LF', type: 'number',
+        hint: 'Linear feet of countertop to install.',
+        rate: 45, rateLabel: 'Countertop install (labor)',
+      },
+      {
+        key: 'backsplash', label: 'Backsplash', type: 'select',
+        options: ['None', 'Tile', 'Laminate (homeowner supplied)'],
+        hint: 'Tile backsplash is a separate scope from countertop installation.',
+      },
+      {
+        key: 'sinkType', label: 'Sink Type', type: 'select',
+        options: ['None', 'Top Mount', 'Undermount (homeowner supplied)'],
+        hint: 'Undermount requires additional support and silicone seal. Material supplied by homeowner.',
+        conditionalFlat: 350, skipValue: 'None', rateLabel: 'Sink installation',
+      },
+      {
+        key: 'appliancesEA', label: 'Appliances to Install', unit: 'EA', type: 'number',
+        hint: 'Count of appliances to set and connect (range, dishwasher, hood, microwave, etc.).',
+      },
+      {
+        key: 'demoExistingCabinets', label: 'Demo Existing Cabinets?', type: 'toggle',
+        hint: 'Includes disconnecting plumbing, removing all cabinet boxes and countertops, and haul-off.',
+        rate: 800, flat: true, rateLabel: 'Demo — cabinets & countertops',
+      },
     ],
   },
 
@@ -232,6 +293,13 @@ export function computeLineItems(config, measurements, multiplier) {
       if (!rate) return []
       const label = material ? `${f.rateLabel} — ${material}` : f.rateLabel
       return [{ label, qty, unit: 'SF', baseRate: rate, baseAmount: qty * rate, amount: qty * rate * multiplier }]
+    }
+
+    // Conditional flat: select field adds a fixed amount when value ≠ skipValue
+    if (f.conditionalFlat !== undefined) {
+      const val = measurements[f.key]
+      if (!val || val === f.skipValue) return []
+      return [{ label: f.rateLabel, qty: null, unit: null, baseRate: f.conditionalFlat, baseAmount: f.conditionalFlat, amount: f.conditionalFlat * multiplier }]
     }
 
     if (f.rate === undefined) return []
