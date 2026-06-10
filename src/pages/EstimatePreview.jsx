@@ -123,17 +123,11 @@ export default function EstimatePreview() {
   const baseSubtotal = gen.subtotal
   const multiplier = gen.multiplier || 1
   const computedTotal = Math.round(baseSubtotal * multiplier)
-  const adjustment = computedTotal - baseSubtotal
-  const showAdj = multiplier !== 1
 
   const workTypeLabel = WORK_TYPE_LABELS[estimate.workType]
   const estimateTitle = workTypeLabel
     ? `${workTypeLabel.toUpperCase()} ESTIMATE`
     : 'ESTIMATE'
-
-  const cityLabel = estimate.city
-    ? estimate.city.charAt(0).toUpperCase() + estimate.city.slice(1).toLowerCase()
-    : region?.label
 
   const backTarget = id ? '/projects' : '/new-estimate/4'
 
@@ -221,11 +215,6 @@ export default function EstimatePreview() {
             <div>
               <p className="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-2">Project</p>
               <p className="text-sm font-semibold text-gray-900 dark:text-white">{estimate.projectTitle || gen.title}</p>
-              {region && (
-                <p className="text-xs text-indigo-600 dark:text-indigo-400 mt-1">
-                  {region.label} region — ×{gen.multiplier?.toFixed(2)} cost multiplier applied
-                </p>
-              )}
             </div>
           </div>
 
@@ -298,20 +287,6 @@ export default function EstimatePreview() {
           {/* Totals */}
           <div className="px-8 pb-8">
             <div className="ml-auto w-72 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
-              {showAdj && (
-                <>
-                  <div className="flex justify-between items-center px-5 py-3 border-b border-gray-100 dark:border-gray-800">
-                    <span className="text-sm text-gray-500 dark:text-gray-400">Subtotal (base)</span>
-                    <span className="text-sm text-gray-700 dark:text-gray-300 tabular-nums">{fmt(baseSubtotal)}</span>
-                  </div>
-                  <div className="flex justify-between items-center px-5 py-3 border-b border-gray-100 dark:border-gray-800">
-                    <span className="text-sm text-indigo-600 dark:text-indigo-400">
-                      Regional adjustment ({cityLabel} ×{gen.multiplier?.toFixed(2)})
-                    </span>
-                    <span className="text-sm text-indigo-600 dark:text-indigo-400 tabular-nums">+{fmt(adjustment)}</span>
-                  </div>
-                </>
-              )}
               <div className="flex justify-between items-center px-5 py-4 bg-gray-50 dark:bg-gray-800/50">
                 <span className="text-base font-bold text-gray-900 dark:text-white">Total Price</span>
                 <span className="text-xl font-bold text-gray-900 dark:text-white tabular-nums">{fmt(computedTotal)}</span>
