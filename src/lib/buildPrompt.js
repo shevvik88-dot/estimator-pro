@@ -99,6 +99,74 @@ You MUST produce separate line items in this exact order — no exceptions:
 `
 }
 
+function getKitchenSectionGuide(measurements = {}) {
+  const demoYes = measurements.demoExistingCabinets === 'yes'
+  const hasAppliances = parseFloat(measurements.appliancesEA) > 0
+  const sinkIsNone = !measurements.sinkType || measurements.sinkType === 'None'
+  const sinkHomeowner = measurements.sinkType?.toLowerCase().includes('homeowner')
+  const countertopHomeowner = measurements.countertopType === 'Homeowner Supplied'
+  const backsplashIncluded = measurements.backsplash && measurements.backsplash !== 'None'
+
+  const cabinetMaterialRate =
+    measurements.cabinetType === 'Custom'      ? '$450/LF' :
+    measurements.cabinetType === 'Semi-Custom' ? '$280/LF' :
+    '$160/LF'
+
+  const rows = []
+  let n = 1
+
+  if (demoYes) {
+    rows.push(`${n++}. DEMO & SITE PREPARATION — 1 EA flat, $650–800 (remove cabinets, countertops, disconnect plumbing, haul-off)`)
+  }
+  rows.push(`${n++}. CABINETS (LABOR) — per LF, minimum $50/LF`)
+  rows.push(`${n++}. CABINETS (MATERIAL) — per LF, ${cabinetMaterialRate} for ${measurements.cabinetType || 'RTA Stock'} cabinets`)
+  rows.push(`${n++}. CABINET HARDWARE — per EA, $3–8/EA`)
+
+  if (countertopHomeowner) {
+    rows.push(`${n++}. COUNTERTOP INSTALLATION (LABOR ONLY) — homeowner-supplied slab, $45/LF labor, NO material line item`)
+  } else {
+    rows.push(`${n++}. COUNTERTOP INSTALLATION (LABOR) — $45/LF`)
+    rows.push(`${n++}. COUNTERTOP MATERIAL — ${measurements.countertopType || 'countertop'} per LF`)
+  }
+
+  if (!sinkIsNone) {
+    if (sinkHomeowner) {
+      rows.push(`${n++}. SINK INSTALLATION (LABOR ONLY) — homeowner-supplied sink, $200 EA, NO material`)
+    } else {
+      rows.push(`${n++}. SINK & FAUCET — include material and installation labor as separate line items`)
+    }
+  }
+
+  if (backsplashIncluded) {
+    rows.push(`${n++}. BACKSPLASH — ${measurements.backsplash} per SF, include labor and material`)
+  }
+
+  if (hasAppliances) {
+    const appQty = parseInt(measurements.appliancesEA, 10) || 1
+    rows.push(`${n++}. APPLIANCE INSTALLATION — ONE single line item only, qty = ${appQty} EA, $100–150/EA labor only. Do NOT split into separate lines per appliance.`)
+  }
+
+  const strictRules = [
+    countertopHomeowner && 'Countertop is homeowner-supplied — include LABOR ONLY, no countertop material line item.',
+    sinkHomeowner       && 'Sink is homeowner-supplied — include LABOR INSTALL ONLY at $200 EA, no sink or faucet material.',
+    sinkIsNone          && 'No sink in scope — do NOT include any sink, faucet, or plumbing line items.',
+    !backsplashIncluded && 'Backsplash is not in scope — do NOT include any backsplash line items.',
+    'Do NOT add garbage disposal, air gap, soap dispenser, or GFCI outlets unless explicitly mentioned in field notes.',
+    'Do NOT add any sections not listed above unless explicitly mentioned in field notes.',
+  ].filter(Boolean)
+
+  return `
+REQUIRED SECTION BREAKDOWN FOR KITCHEN REMODEL:
+Never combine multiple scopes into a single line item. Labor and material must always be separate line items. Use rates from the template_items table; the minimums below are floors — do not go below them.
+
+You MUST produce sections in this exact order — no exceptions:
+${rows.join('\n')}
+
+STRICT RULES:
+${strictRules.map((r) => `— ${r}`).join('\n')}
+`
+}
+
 export function buildUserPrompt(estimate, templateItems = []) {
   const config = getConfig(estimate.workType)
   const region = US_REGIONS.find((r) => r.id === estimate.region)
@@ -114,6 +182,7 @@ export function buildUserPrompt(estimate, templateItems = []) {
   const workTypeGuide =
     estimate.workType === 'roof-replacement' ? getRoofSectionGuide() :
     estimate.workType === 'lvp-flooring'     ? getLVPSectionGuide() :
+    estimate.workType === 'kitchen-remodel'  ? getKitchenSectionGuide(estimate.measurements) :
     ''
 
   return `Generate a professional construction estimate for the following project:

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { SparklesIcon, CheckCircleIcon } from '@heroicons/react/24/solid'
 import { useEstimate } from '../context/EstimateContext'
@@ -98,6 +98,7 @@ export default function Step4Review() {
   const [generated, setGenerated] = useState(false)
   const [error, setError] = useState(null)
   const [savedEstimateId, setSavedEstimateId] = useState(null)
+  const generatingRef = useRef(false)
 
   const region = US_REGIONS.find((r) => r.id === estimate.region)
   const config = getConfig(estimate.workType)
@@ -108,6 +109,8 @@ export default function Step4Review() {
     .filter((r) => r.value !== null)
 
   async function handleGenerate() {
+    if (generatingRef.current) return
+    generatingRef.current = true
     setLoading(true)
     setError(null)
     try {
@@ -145,6 +148,86 @@ export default function Step4Review() {
       const notesHaveBaseboards = /baseboard/i.test(estimate.notes || '')
       if (!notesHaveBaseboards && result.sections) {
         result.sections = result.sections.filter((s) => !/baseboard|trim/i.test(s.name))
+        result.subtotal = result.sections.reduce(
+          (sum, s) => sum + (s.items ?? []).reduce((acc, item) => acc + (item.total ?? 0), 0),
+          0
+        )
+      }
+
+      // Post-process: kitchen-specific filters
+      console.log('[kitchen filter debug] workType:', estimate.workType)
+      if (estimate.workType === 'kitchen-remodel' && result.sections) {
+        const m = estimate.measurements ?? {}
+        const sinkType = (m.sinkType || '').toLowerCase()
+        const sinkNone = !sinkType || sinkType === 'none'
+        const sinkHomeowner = sinkType.includes('homeowner')
+        const countertopHomeowner = (m.countertopType || '').toLowerCase() === 'homeowner supplied'
+        const notesHaveElectrical = /electrical|gfci/i.test(estimate.notes || '')
+
+        console.log('[kitchen filter] measurements.sinkType raw:', m.sinkType)
+        console.log('[kitchen filter] sinkType normalized:', sinkType, '| sinkNone:', sinkNone, '| sinkHomeowner:', sinkHomeowner)
+        console.log('[kitchen filter] countertopHomeowner:', countertopHomeowner, '| notesHaveElectrical:', notesHaveElectrical)
+        console.log('[kitchen filter] sections BEFORE:', result.sections.length, result.sections.map((s) => s.name))
+
+        // Always removed from kitchen estimates regardless of selections
+        const alwaysUnwanted = /garbage disposal|air gap|soap dispenser|edge lamination/i
+        // Removed only when sink is homeowner-supplied
+        const sinkMaterialPattern = /faucet material|sink material/i
+        // Removed only when countertop is homeowner-supplied
+        const countertopMaterialPattern = /countertop material|countertop slab|\bslab\b/i
+        // Removed unless notes mention electrical
+        const electricalItemPattern = /gfci|electrical circuit|dedicated circuit/i
+
+        result.sections = result.sections
+          // Section-level: remove entire sink section when no sink in scope
+          .filter((s) => {
+            if (sinkNone && /sink|faucet/i.test(s.name)) {
+              console.log('[kitchen filter] removed section (sinkNone):', s.name)
+              return false
+            }
+            return true
+          })
+          // Section-level: remove entire electrical section unless notes mention it
+          .filter((s) => {
+            if (!notesHaveElectrical && /electrical/i.test(s.name)) {
+              console.log('[kitchen filter] removed section (electrical):', s.name)
+              return false
+            }
+            return true
+          })
+          // Item-level: single pass over all remaining items
+          .map((s) => ({
+            ...s,
+            items: (s.items ?? []).filter((item) => {
+              const desc = item.description || ''
+              if (alwaysUnwanted.test(desc)) {
+                console.log('[kitchen filter] removed item (alwaysUnwanted):', desc)
+                return false
+              }
+              if (!notesHaveElectrical && electricalItemPattern.test(desc)) {
+                console.log('[kitchen filter] removed item (electrical):', desc)
+                return false
+              }
+              if (sinkNone && /sink|faucet/i.test(desc)) {
+                console.log('[kitchen filter] removed item (sinkNone stray):', desc)
+                return false
+              }
+              if (sinkHomeowner && sinkMaterialPattern.test(desc)) {
+                console.log('[kitchen filter] removed item (sinkHomeowner):', desc)
+                return false
+              }
+              if (countertopHomeowner && countertopMaterialPattern.test(desc)) {
+                console.log('[kitchen filter] removed item (countertopHomeowner):', desc)
+                return false
+              }
+              return true
+            }),
+          }))
+          // Drop sections emptied by item-level filtering
+          .filter((s) => (s.items ?? []).length > 0)
+
+        console.log('[kitchen filter] sections AFTER:', result.sections.length, result.sections.map((s) => s.name))
+
         result.subtotal = result.sections.reduce(
           (sum, s) => sum + (s.items ?? []).reduce((acc, item) => acc + (item.total ?? 0), 0),
           0
@@ -191,6 +274,7 @@ export default function Step4Review() {
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Generation failed. Check your API key and try again.')
     } finally {
+      generatingRef.current = false
       setLoading(false)
     }
   }
@@ -339,7 +423,8 @@ export default function Step4Review() {
               <>
                 <button
                   onClick={handleGenerate}
-                  className="w-full flex items-center justify-center gap-2.5 px-5 py-3.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white text-sm font-bold transition-colors shadow-sm shadow-indigo-200 dark:shadow-none"
+                  disabled={loading}
+                  className="w-full flex items-center justify-center gap-2.5 px-5 py-3.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white text-sm font-bold transition-colors shadow-sm shadow-indigo-200 dark:shadow-none disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <SparklesIcon className="w-4 h-4" />
                   Generate Estimate
