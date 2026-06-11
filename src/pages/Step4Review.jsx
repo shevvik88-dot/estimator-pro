@@ -170,7 +170,9 @@ export default function Step4Review() {
         console.log('[kitchen filter] sections BEFORE:', result.sections.length, result.sections.map((s) => s.name))
 
         // Always removed from kitchen estimates regardless of selections
-        const alwaysUnwanted = /garbage disposal|air gap|soap dispenser|edge lamination/i
+        const alwaysUnwanted = /garbage disposal|air gap|soap dispenser/i
+        // Only remove edge lamination when it IS the primary scope, not when mentioned as an included step
+        const edgeLaminationStandalone = /^labor\s+(for|to apply)\s+edge lamination/i
         // Removed only when sink is homeowner-supplied
         const sinkMaterialPattern = /faucet material|sink material/i
         // Removed only when countertop is homeowner-supplied
@@ -202,6 +204,10 @@ export default function Step4Review() {
               const desc = item.description || ''
               if (alwaysUnwanted.test(desc)) {
                 console.log('[kitchen filter] removed item (alwaysUnwanted):', desc)
+                return false
+              }
+              if (edgeLaminationStandalone.test(desc)) {
+                console.log('[kitchen filter] removed item (edge lamination standalone):', desc)
                 return false
               }
               if (!notesHaveElectrical && electricalItemPattern.test(desc)) {
