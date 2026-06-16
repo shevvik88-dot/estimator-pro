@@ -51,32 +51,6 @@ export async function getProjects(userId) {
   return data
 }
 
-export async function getPriceOverrides(userId) {
-  const { data, error } = await supabase
-    .from('price_overrides')
-    .select('*')
-    .eq('user_id', userId)
-  if (error) throw error
-  return data ?? []
-}
-
-export async function upsertPriceOverrides(rows) {
-  if (!rows.length) return
-  const { error } = await supabase
-    .from('price_overrides')
-    .upsert(rows, { onConflict: 'user_id,item_key' })
-  if (error) throw error
-}
-
-export async function deletePriceOverrides(userId, itemKeys) {
-  if (!itemKeys.length) return
-  const { error } = await supabase
-    .from('price_overrides')
-    .delete()
-    .eq('user_id', userId)
-    .in('item_key', itemKeys)
-  if (error) throw error
-}
 
 export async function getEstimate(estimateId) {
   const { data, error } = await supabase

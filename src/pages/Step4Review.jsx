@@ -5,35 +5,36 @@ import { useEstimate } from '../context/EstimateContext'
 import StepProgressBar from '../components/StepProgressBar'
 import { US_REGIONS } from '../lib/regions'
 import { getConfig } from '../lib/measurementConfigs'
-import { anthropic } from '../lib/anthropic'
 import { SYSTEM_PROMPT, buildUserPrompt } from '../lib/buildPrompt'
 import { supabase } from '../lib/supabase'
 import { saveProject, saveEstimate, getTemplateItems, getUserPrices } from '../lib/db'
 
-// ── Anthropic API call ─────────────────────────────────────────────────────
-async function generateEstimate(estimate, templateItems) {
-  console.log(`[AI call] workType="${estimate.workType}" | template_items count:`, templateItems.length, templateItems)
+// ── Anthropic API call (via Supabase Edge Function) ────────────────────────
+async function generateEstimate(estimate, templateItems, accessToken) {
+  console.log(`[AI call] workType="${estimate.workType}" | template_items count:`, templateItems.length)
   const userPrompt = buildUserPrompt(estimate, templateItems)
 
-  const message = await anthropic.messages.create({
-    model: 'claude-sonnet-4-6',
-    max_tokens: 4096,
-    system: [
-      {
-        type: 'text',
-        text: SYSTEM_PROMPT,
-        cache_control: { type: 'ephemeral' },
+  const res = await fetch(
+    `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-estimate`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${accessToken}`,
+        'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY,
       },
-    ],
-    messages: [{ role: 'user', content: userPrompt }],
-  })
+      body: JSON.stringify({ systemPrompt: SYSTEM_PROMPT, userPrompt }),
+    }
+  )
 
-  const rawText = message.content
-    .filter((b) => b.type === 'text')
-    .map((b) => b.text)
-    .join('')
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}))
+    throw new Error(body.error || `Edge Function error ${res.status}`)
+  }
 
-  const cleaned = rawText
+  const { text } = await res.json()
+
+  const cleaned = text
     .replace(/^```(?:json)?\s*/i, '')
     .replace(/\s*```$/, '')
     .trim()
@@ -142,7 +143,7 @@ export default function Step4Review() {
         }
       }
 
-      const result = await generateEstimate(estimate, templateItems)
+      const result = await generateEstimate(estimate, templateItems, session.access_token)
 
       // Post-process: strip baseboard/trim sections unless field notes mention them
       const notesHaveBaseboards = /baseboard/i.test(estimate.notes || '')
