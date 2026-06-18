@@ -477,6 +477,38 @@ export default function ContractPreview() {
               </p>
             </section>
 
+            {/* 24 */}
+            <section className="contract-section">
+              <SectionHeader>Owner's Personal Property</SectionHeader>
+              <p>
+                Customer agrees to remove from the job site, or otherwise protect and secure, any personal property including but not limited to furniture, rugs, electronics, appliances, artwork, jewelry, cash, and collectibles. Contractor shall not be responsible for any loss or damage to personal property of Customer or any third party that remains on site during the project.
+              </p>
+            </section>
+
+            {/* 25 */}
+            <section className="contract-section">
+              <SectionHeader>Mutual Waiver of Consequential Damages</SectionHeader>
+              <p>
+                Contractor and Customer mutually waive all claims against each other for consequential damages arising out of or relating to this Agreement, including but not limited to lost income, lost use, rental or temporary housing expenses, and lost business opportunity. This waiver applies regardless of which party terminates the Agreement.
+              </p>
+            </section>
+
+            {/* 26 */}
+            <section className="contract-section">
+              <SectionHeader>Hazardous Materials</SectionHeader>
+              <p>
+                If Contractor encounters suspected asbestos, lead paint, mold, or other hazardous materials not identified in the original scope of work, Contractor will immediately stop work in the affected area and notify Customer. Testing and remediation of such materials, if needed, will be treated as additional work requiring a separate written Change Order and is not included in the original Contract Price.
+              </p>
+            </section>
+
+            {/* 27 */}
+            <section className="contract-section">
+              <SectionHeader>Limited Warranty</SectionHeader>
+              <p>
+                Contractor warrants all labor performed under this Agreement against defects in workmanship for a period of one (1) year from the date of substantial completion. Materials, fixtures, and appliances are covered solely by their respective manufacturer warranties, not by Contractor. This warranty does not cover damage caused by normal wear and tear, misuse, or alterations made by Customer or third parties after completion.
+              </p>
+            </section>
+
           </div>
 
           {/* SIGNATURES */}
