@@ -367,6 +367,9 @@ export default function ContractPreview() {
               <p>
                 Contractor provides a one (1) year limited warranty on completed labor. That policy is terminated if the home is sold or becomes the property of anyone other than the parties named in this contract.
               </p>
+              <p className="mt-2">
+                This warranty covers labor and workmanship only. Materials, fixtures, and appliances are covered solely by their respective manufacturer warranties, not by Contractor.
+              </p>
             </section>
 
             {/* 10 */}
@@ -394,6 +397,14 @@ export default function ContractPreview() {
               <SectionHeader>Personal Property</SectionHeader>
               <p>
                 Customer agrees to relocate all furniture, clothing, plants, rugs, and all personal items away from the work area prior to the commencement of work. Contractor is not responsible for any damage to items that have not been removed from the work area prior to the start of the project.
+              </p>
+            </section>
+
+            {/* 13a */}
+            <section className="contract-section">
+              <SectionHeader>Hazardous Materials</SectionHeader>
+              <p>
+                If Contractor encounters suspected asbestos, lead paint, mold, or other hazardous materials not identified in the original scope of work, Contractor will immediately stop work in the affected area and notify Customer. Testing and remediation of such materials, if needed, will be treated as additional work requiring a separate written Change Order and is not included in the original Contract Price.
               </p>
             </section>
 
@@ -494,14 +505,6 @@ export default function ContractPreview() {
             </section>
 
             {/* 26 */}
-            <section className="contract-section">
-              <SectionHeader>Hazardous Materials</SectionHeader>
-              <p>
-                If Contractor encounters suspected asbestos, lead paint, mold, or other hazardous materials not identified in the original scope of work, Contractor will immediately stop work in the affected area and notify Customer. Testing and remediation of such materials, if needed, will be treated as additional work requiring a separate written Change Order and is not included in the original Contract Price.
-              </p>
-            </section>
-
-            {/* 27 */}
             <section className="contract-section">
               <SectionHeader>Limited Warranty</SectionHeader>
               <p>
